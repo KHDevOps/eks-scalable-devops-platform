@@ -56,7 +56,7 @@ The platform consists of the following components:
 
 ## Prerequisites
 
-- **Amazon Web Services**** account with billing enabled
+- **Amazon Web Services** account with billing enabled
 - **AWS CLI** installed and configured
 - **Terraform** installed on your machine
 - **Kubernetes** CLI (kubectl) installed
