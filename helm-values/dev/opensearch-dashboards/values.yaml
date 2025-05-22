@@ -1,0 +1,26 @@
+# helm-values/dev/opensearch-dashboards/values.yaml
+
+# Connect to OpenSearch (no auth needed since security disabled)
+opensearchHosts: "http://opensearch-cluster-master:9200"
+
+# Small resources for Minikube
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+# Simple config without authentication
+config:
+  opensearch_dashboards.yml: |
+    server.host: 0.0.0.0
+    opensearch.hosts: [http://opensearch-cluster-master:9200]
+    opensearch.ssl.verificationMode: none
+    opensearch.requestHeadersAllowlist: ["authorization", "securitytenant"]
+    opensearch_security.multitenancy.enabled: false
+    opensearch_security.disabled: true
+
+# Single replica
+replicaCount: 1
