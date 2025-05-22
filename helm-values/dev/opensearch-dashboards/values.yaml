@@ -1,37 +1,24 @@
-# OpenSearch - Simple Minikube values.yaml
-replicas: 1
-# REMOVE minimumMasterNodes when using single-node discovery
+# OpenSearch Dashboards - Simple Minikube values.yaml
+replicaCount: 1
 
-# Simple password
-extraEnvs:
-  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: "MyPassword123!"
-  - name: "DISABLE_INSTALL_DEMO_CONFIG"
-    value: "true"
+# Connect to OpenSearch
+opensearchHosts: "http://opensearch-cluster-master:9200"
 
 # Minimal resources
 resources:
   requests:
     cpu: "100m"
-    memory: "512Mi"
+    memory: "256Mi"
   limits:
-    cpu: "500m"
-    memory: "1Gi"
+    cpu: "300m"
+    memory: "512Mi"
 
-# Disable security for simplicity
+# Simple config - no authentication needed since security is disabled
 config:
-  opensearch.yml: |
-    plugins.security.disabled: true
-    discovery.type: single-node
-    # Remove any cluster bootstrap settings for single-node
-
-# No persistence for testing
-persistence:
-  enabled: false
+  opensearch_dashboards.yml: |
+    server.host: 0.0.0.0
+    opensearch.hosts: ["http://opensearch-cluster-master:9200"]
 
 # Simple service
 service:
   type: ClusterIP
-
-# Explicitly disable cluster bootstrap for single node
-singleNode: true

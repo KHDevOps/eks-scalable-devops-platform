@@ -1,6 +1,6 @@
 # OpenSearch - Simple Minikube values.yaml
 replicas: 1
-minimumMasterNodes: 1
+# REMOVE minimumMasterNodes when using single-node discovery
 
 # Simple password
 extraEnvs:
@@ -23,6 +23,7 @@ config:
   opensearch.yml: |
     plugins.security.disabled: true
     discovery.type: single-node
+    # Remove any cluster bootstrap settings for single-node
 
 # No persistence for testing
 persistence:
@@ -31,3 +32,6 @@ persistence:
 # Simple service
 service:
   type: ClusterIP
+
+# Explicitly disable cluster bootstrap for single node
+singleNode: true
