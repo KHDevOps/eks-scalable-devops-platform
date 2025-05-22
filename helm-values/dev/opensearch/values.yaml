@@ -1,65 +1,33 @@
-# OpenSearch values.yaml for Minikube
-singleNode: true
+# OpenSearch - Simple Minikube values.yaml
 replicas: 1
+minimumMasterNodes: 1
 
-# Set the initial admin password - MUST match dashboards config
+# Simple password
 extraEnvs:
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: "Admin123!"
-  - name: DISABLE_PERFORMANCE_ANALYZER_AGENT_CLI
+    value: "MyPassword123!"
+  - name: "DISABLE_INSTALL_DEMO_CONFIG"
     value: "true"
 
-# Small resources for Minikube
+# Minimal resources
 resources:
   requests:
+    cpu: "100m"
+    memory: "512Mi"
+  limits:
     cpu: "500m"
     memory: "1Gi"
-  limits:
-    cpu: "1000m"
-    memory: "2Gi"
 
-# Security configuration for development
+# Disable security for simplicity
 config:
   opensearch.yml: |
-    cluster.name: opensearch-cluster
-    network.host: 0.0.0.0
-    
-    # Security settings for development
-    plugins.security.ssl.transport.enforce_hostname_verification: false
-    plugins.security.ssl.http.enabled: false
-    plugins.security.disabled: false
-    plugins.security.allow_unsafe_democertificates: true
-    plugins.security.allow_default_init_securityindex: true
-    plugins.security.authcz.admin_dn:
-      - CN=kirk,OU=client,O=client,L=test,C=de
-    
-    # Disable performance analyzer to avoid errors
-    plugins.security.nodes_dn:
-      - CN=node-0.example.com,OU=node,O=node,L=test,C=de
-    
-    # Development settings
-    node.max_local_storage_nodes: 1
+    plugins.security.disabled: true
     discovery.type: single-node
-    
-    # Performance settings for Minikube
-    bootstrap.memory_lock: false
-    indices.query.bool.max_clause_count: 1024
 
-# Persistence for development
+# No persistence for testing
 persistence:
-  enabled: true
-  size: 8Gi
+  enabled: false
 
-# Service configuration
+# Simple service
 service:
   type: ClusterIP
-  httpPort: 9200
-
-# Security context to fix file permission warnings
-securityContext:
-  fsGroup: 1000
-  runAsUser: 1000
-
-podSecurityContext:
-  fsGroup: 1000
-  runAsUser: 1000

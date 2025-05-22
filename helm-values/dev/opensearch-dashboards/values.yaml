@@ -1,53 +1,24 @@
-# OpenSearch Dashboards values.yaml for Minikube
-# Connect to OpenSearch - using HTTP since SSL is disabled
-opensearchHosts: "http://opensearch-cluster-master:9200"
-
-# Small resources for Minikube
-resources:
-  requests:
-    cpu: "200m"
-    memory: "512Mi"
-  limits:
-    cpu: "500m"
-    memory: "1Gi"
-
-# Single replica
+# OpenSearch Dashboards - Simple Minikube values.yaml
 replicaCount: 1
 
-# Configure connection to OpenSearch with admin credentials
-# Password MUST match the one set in OpenSearch
+# Connect to OpenSearch
+opensearchHosts: "http://opensearch-cluster-master:9200"
+
+# Minimal resources
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "300m"
+    memory: "512Mi"
+
+# Simple config - no authentication needed since security is disabled
 config:
   opensearch_dashboards.yml: |
-    opensearch.hosts: ["http://opensearch-cluster-master:9200"]
-    opensearch.username: admin
-    opensearch.password: Admin123!
-    opensearch.ssl.verificationMode: none
-    
-    # Development settings
     server.host: 0.0.0.0
-    server.basePath: ""
-    server.rewriteBasePath: false
-    
-    # Disable security for development
-    opensearch_security.multitenancy.enabled: false
-    opensearch_security.readonly_mode.roles: []
-    
-    # Performance settings
-    logging.quiet: true
-    
-    # Development configuration
-    data.search.aggs.shardDelay.enabled: false
+    opensearch.hosts: ["http://opensearch-cluster-master:9200"]
 
-# Service configuration
+# Simple service
 service:
   type: ClusterIP
-  port: 5601
-
-# Security context
-securityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
-
-podSecurityContext:
-  fsGroup: 1000
-  runAsUser: 1000
