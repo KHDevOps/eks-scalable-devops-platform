@@ -1,5 +1,12 @@
-# Connect to OpenSearch
+# Connect to OpenSearch with credentials
 opensearchHosts: "http://opensearch-cluster-master:9200"
+
+# Add authentication config
+config:
+  opensearch_dashboards.yml: |
+    opensearch.username: admin
+    opensearch.password: admin
+    opensearch.ssl.verificationMode: none
 
 # Small resources for Minikube
 resources:
