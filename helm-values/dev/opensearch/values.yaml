@@ -15,15 +15,3 @@ resources:
   limits:
     cpu: "1000m"
     memory: "2Gi"
-
-# Enable security with demo certs
-config:
-  opensearch.yml: |
-    plugins.security.disabled: false
-    plugins.security.allow_default_init_securityindex: true
-    plugins.security.allow_unsafe_democertificates: true
-    discovery.type: single-node
-
-# Use hostPath for persistence (Minikube friendly)
-persistence:
-  enabled: false
