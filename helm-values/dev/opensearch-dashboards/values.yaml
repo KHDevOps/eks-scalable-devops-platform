@@ -1,4 +1,5 @@
-# Connect to OpenSearch
+# OpenSearch Dashboards values.yaml for Minikube
+# Connect to OpenSearch - using HTTP since SSL is disabled
 opensearchHosts: "http://opensearch-cluster-master:9200"
 
 # Small resources for Minikube
@@ -14,8 +15,39 @@ resources:
 replicaCount: 1
 
 # Configure connection to OpenSearch with admin credentials
+# Password MUST match the one set in OpenSearch
 config:
   opensearch_dashboards.yml: |
+    opensearch.hosts: ["http://opensearch-cluster-master:9200"]
     opensearch.username: admin
     opensearch.password: Admin123!
     opensearch.ssl.verificationMode: none
+    
+    # Development settings
+    server.host: 0.0.0.0
+    server.basePath: ""
+    server.rewriteBasePath: false
+    
+    # Disable security for development
+    opensearch_security.multitenancy.enabled: false
+    opensearch_security.readonly_mode.roles: []
+    
+    # Performance settings
+    logging.quiet: true
+    
+    # Development configuration
+    data.search.aggs.shardDelay.enabled: false
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 5601
+
+# Security context
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000

@@ -1,13 +1,15 @@
-# Single node setup for Minikube
+# OpenSearch values.yaml for Minikube
 singleNode: true
 replicas: 1
 
-# Set the initial admin password (THIS IS WHERE IT GOES!)
+# Set the initial admin password - MUST match dashboards config
 extraEnvs:
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: "Test123!!@Sfdsaslkcm?"
+    value: "Admin123!"
+  - name: DISABLE_PERFORMANCE_ANALYZER_AGENT_CLI
+    value: "true"
 
-# Very small resources for Minikube
+# Small resources for Minikube
 resources:
   requests:
     cpu: "500m"
@@ -15,3 +17,49 @@ resources:
   limits:
     cpu: "1000m"
     memory: "2Gi"
+
+# Security configuration for development
+config:
+  opensearch.yml: |
+    cluster.name: opensearch-cluster
+    network.host: 0.0.0.0
+    
+    # Security settings for development
+    plugins.security.ssl.transport.enforce_hostname_verification: false
+    plugins.security.ssl.http.enabled: false
+    plugins.security.disabled: false
+    plugins.security.allow_unsafe_democertificates: true
+    plugins.security.allow_default_init_securityindex: true
+    plugins.security.authcz.admin_dn:
+      - CN=kirk,OU=client,O=client,L=test,C=de
+    
+    # Disable performance analyzer to avoid errors
+    plugins.security.nodes_dn:
+      - CN=node-0.example.com,OU=node,O=node,L=test,C=de
+    
+    # Development settings
+    node.max_local_storage_nodes: 1
+    discovery.type: single-node
+    
+    # Performance settings for Minikube
+    bootstrap.memory_lock: false
+    indices.query.bool.max_clause_count: 1024
+
+# Persistence for development
+persistence:
+  enabled: true
+  size: 8Gi
+
+# Service configuration
+service:
+  type: ClusterIP
+  httpPort: 9200
+
+# Security context to fix file permission warnings
+securityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
