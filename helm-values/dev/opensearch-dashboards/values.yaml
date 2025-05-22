@@ -1,4 +1,4 @@
-# Connect to OpenSearch (no auth needed since security disabled)
+# Connect to OpenSearch
 opensearchHosts: "http://opensearch-cluster-master:9200"
 
 # Small resources for Minikube
@@ -9,15 +9,6 @@ resources:
   limits:
     cpu: "500m"
     memory: "1Gi"
-
-# Simple config without authentication
-config:
-  opensearch_dashboards.yml: |
-    server.host: 0.0.0.0
-    opensearch.hosts: [http://opensearch-cluster-master:9200]
-    opensearch.ssl.verificationMode: none
-    opensearch_security.multitenancy.enabled: false
-    opensearch_security.disabled: true
 
 # Single replica
 replicaCount: 1
