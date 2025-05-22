@@ -1,5 +1,3 @@
-# helm-values/dev/opensearch-dashboards/values.yaml
-
 # Connect to OpenSearch with credentials
 opensearchHosts: "http://opensearch-cluster-master:9200"
 
@@ -8,13 +6,13 @@ extraEnvs:
   - name: OPENSEARCH_USERNAME
     value: "admin"
   - name: OPENSEARCH_PASSWORD
-    value: "admin"
+    value: "Admin123!"
 
 # Add authentication config
 config:
   opensearch_dashboards.yml: |
     opensearch.username: admin
-    opensearch.password: admin
+    opensearch.password: Admin123!
     opensearch.ssl.verificationMode: none
 
 # Small resources for Minikube
