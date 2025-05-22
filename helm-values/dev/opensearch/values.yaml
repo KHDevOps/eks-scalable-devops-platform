@@ -1,12 +1,15 @@
-# OpenSearch with Security Completely Disabled
+# OpenSearch - Simple Minikube values.yaml
 replicas: 1
+# REMOVE minimumMasterNodes when using single-node discovery
 
-# No admin password needed when security is disabled
+# Simple password
 extraEnvs:
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: "MyPassword123!"
   - name: "DISABLE_INSTALL_DEMO_CONFIG"
     value: "true"
 
-# Resources
+# Minimal resources
 resources:
   requests:
     cpu: "100m"
@@ -15,26 +18,20 @@ resources:
     cpu: "500m"
     memory: "1Gi"
 
-# Disable security completely
+# Disable security for simplicity
 config:
   opensearch.yml: |
-    cluster.name: opensearch-cluster
-    network.host: 0.0.0.0
-    discovery.type: single-node
     plugins.security.disabled: true
-
-# Disable security config
-securityConfig:
-  enabled: false
+    discovery.type: single-node
+    # Remove any cluster bootstrap settings for single-node
 
 # No persistence for testing
 persistence:
   enabled: false
 
-# Service configuration
+# Simple service
 service:
   type: ClusterIP
 
-# Single node setup
+# Explicitly disable cluster bootstrap for single node
 singleNode: true
-protocol: http

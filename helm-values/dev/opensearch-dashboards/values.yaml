@@ -1,12 +1,13 @@
 replicaCount: 1
 
-# Connect to OpenSearch with HTTP (no security)
 opensearchHosts: "http://opensearch-cluster-master:9200"
 
-# No auth env vars needed when security is disabled
-extraEnvs: []
+extraEnvs:
+  - name: "OPENSEARCH_INITIAL_ADMIN_USERNAME"
+    value: "admin"
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: "MyPassword123!"
 
-# Basic resources
 resources:
   requests:
     cpu: "100m"
@@ -14,9 +15,3 @@ resources:
 
 service:
   type: NodePort
-
-# Configure dashboards for no security
-config:
-  opensearch_dashboards.yml: |
-    server.host: "0.0.0.0"
-    opensearch.hosts: ["http://opensearch-cluster-master:9200"]
