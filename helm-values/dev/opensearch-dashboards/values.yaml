@@ -1,5 +1,14 @@
+# helm-values/dev/opensearch-dashboards/values.yaml
+
 # Connect to OpenSearch with credentials
 opensearchHosts: "http://opensearch-cluster-master:9200"
+
+# Set credentials via environment variables
+extraEnvs:
+  - name: OPENSEARCH_USERNAME
+    value: "admin"
+  - name: OPENSEARCH_PASSWORD
+    value: "admin"
 
 # Add authentication config
 config:
