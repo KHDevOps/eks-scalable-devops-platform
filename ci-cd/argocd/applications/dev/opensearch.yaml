@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opensearch
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
+    path: helm-charts/opensearch
+    targetRevision: monitoring
+    helm:
+      valueFiles:
+        - ../../helm-values/dev/opensearch/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opensearch-dashboards
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
+    path: helm-charts/opensearch-dashboards
+    targetRevision: monitoring
+    helm:
+      valueFiles:
+        - ../../helm-values/dev/opensearch-dashboards/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - CreateNamespace=true

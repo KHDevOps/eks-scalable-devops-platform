@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
-    targetRevision: readmev2
+    targetRevision: monitoring
     path: kubernetes/overlays/dev/networking
   destination:
     server: https://kubernetes.default.svc

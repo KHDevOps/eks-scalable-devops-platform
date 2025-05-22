@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
     path: helm-charts/cluster-autoscaler
-    targetRevision: readmev2
+    targetRevision: monitoring
     helm:
       valueFiles:
         - ../../helm-values/dev/cluster-autoscaler/values.yaml

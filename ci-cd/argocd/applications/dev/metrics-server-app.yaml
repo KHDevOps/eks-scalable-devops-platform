@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
-    targetRevision: readmev2
+    targetRevision: monitoring
     path: helm-charts/metrics-server
     helm:
       valueFiles:
