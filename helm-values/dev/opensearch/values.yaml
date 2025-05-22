@@ -5,7 +5,7 @@ replicas: 1
 # Set the initial admin password (THIS IS WHERE IT GOES!)
 extraEnvs:
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: "Admin123!"
+    value: "Test123!!@Sfdsaslkcm?"
 
 # Very small resources for Minikube
 resources:
