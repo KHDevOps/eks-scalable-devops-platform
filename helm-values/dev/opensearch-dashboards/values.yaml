@@ -1,9 +1,10 @@
-# If you want security enabled instead
-replicas: 1
-singleNode: true
+replicaCount: 1
 
-# Set admin password
+opensearchHosts: "http://opensearch-cluster-master:9200"
+
 extraEnvs:
+  - name: "OPENSEARCH_INITIAL_ADMIN_USERNAME"
+    value: "admin"
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
     value: "MyPassword123!"
 
@@ -11,20 +12,6 @@ resources:
   requests:
     cpu: "100m"
     memory: "512Mi"
-  limits:
-    cpu: "500m"
-    memory: "1Gi"
-
-config:
-  opensearch.yml: |
-    discovery.type: single-node
-    # Security enabled but simplified
-    plugins.security.ssl.http.enabled: false
-    plugins.security.allow_default_init_securityindex: true
-    plugins.security.allow_unsafe_democertificates: true
-
-persistence:
-  enabled: false
 
 service:
-  type: ClusterIP
+  type: NodePort
