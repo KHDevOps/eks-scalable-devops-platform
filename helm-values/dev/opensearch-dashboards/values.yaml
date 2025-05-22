@@ -1,5 +1,3 @@
-# helm-values/dev/opensearch-dashboards/values.yaml
-
 # Connect to OpenSearch (no auth needed since security disabled)
 opensearchHosts: "http://opensearch-cluster-master:9200"
 
@@ -18,7 +16,6 @@ config:
     server.host: 0.0.0.0
     opensearch.hosts: [http://opensearch-cluster-master:9200]
     opensearch.ssl.verificationMode: none
-    opensearch.requestHeadersAllowlist: ["authorization", "securitytenant"]
     opensearch_security.multitenancy.enabled: false
     opensearch_security.disabled: true
 
