@@ -1,19 +1,5 @@
-# Connect to OpenSearch with credentials
+# Connect to OpenSearch
 opensearchHosts: "http://opensearch-cluster-master:9200"
-
-# Set credentials via environment variables
-extraEnvs:
-  - name: OPENSEARCH_USERNAME
-    value: "admin"
-  - name: OPENSEARCH_PASSWORD
-    value: "Admin123!"
-
-# Add authentication config
-config:
-  opensearch_dashboards.yml: |
-    opensearch.username: admin
-    opensearch.password: Admin123!
-    opensearch.ssl.verificationMode: none
 
 # Small resources for Minikube
 resources:
@@ -26,3 +12,10 @@ resources:
 
 # Single replica
 replicaCount: 1
+
+# Configure connection to OpenSearch with admin credentials
+config:
+  opensearch_dashboards.yml: |
+    opensearch.username: admin
+    opensearch.password: Admin123!
+    opensearch.ssl.verificationMode: none

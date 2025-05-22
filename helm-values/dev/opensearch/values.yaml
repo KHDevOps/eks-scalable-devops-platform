@@ -2,10 +2,10 @@
 singleNode: true
 replicas: 1
 
-# Disable security completely for testing
+# Set the initial admin password (THIS IS WHERE IT GOES!)
 extraEnvs:
-  - name: DISABLE_INSTALL_DEMO_CONFIG
-    value: "true"
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: "Admin123!"
 
 # Very small resources for Minikube
 resources:
@@ -16,10 +16,12 @@ resources:
     cpu: "1000m"
     memory: "2Gi"
 
-# Disable security plugin
+# Enable security with demo certs
 config:
   opensearch.yml: |
-    plugins.security.disabled: true
+    plugins.security.disabled: false
+    plugins.security.allow_default_init_securityindex: true
+    plugins.security.allow_unsafe_democertificates: true
     discovery.type: single-node
 
 # Use hostPath for persistence (Minikube friendly)
