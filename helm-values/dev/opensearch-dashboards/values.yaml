@@ -11,7 +11,7 @@ extraEnvs:
 resources:
   requests:
     cpu: "100m"
-    memory: "512Mi"
+    memory: "512M"
 
 service:
   type: NodePort
