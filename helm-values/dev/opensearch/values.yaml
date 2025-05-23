@@ -1,7 +1,7 @@
-# OpenSearch - Updated values.yaml with security enabled
+# OpenSearch - Fixed values.yaml for version 3.0.0
 replicas: 1
 
-# Admin password
+# CRITICAL: Admin password for OpenSearch 3.0.0+
 extraEnvs:
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
     value: "MyPassword123!"
@@ -15,28 +15,11 @@ resources:
     cpu: "500m"
     memory: "1Gi"
 
-# Enable security but use basic configuration
+# Simplified configuration - let the demo installer handle security setup
 config:
   opensearch.yml: |
-    # Enable security plugin
-    plugins.security.disabled: false
-    
-    # Single node setup
     discovery.type: single-node
     
-    # Basic security settings for development
-    plugins.security.ssl.transport.enabled: false
-    plugins.security.ssl.http.enabled: false
-    plugins.security.allow_default_init_securityindex: true
-    plugins.security.authcz.admin_dn:
-      - "CN=admin,O=client,L=test,C=de"
-    plugins.security.nodes_dn:
-      - "CN=node.example.com,O=node,L=test,C=de"
-    plugins.security.audit.type: internal_opensearch
-    plugins.security.enable_snapshot_restore_privilege: true
-    plugins.security.check_snapshot_restore_write_privileges: true
-    plugins.security.restapi.roles_enabled: ["all_access", "security_rest_api_access"]
-
 # No persistence for testing
 persistence:
   enabled: false
@@ -47,3 +30,7 @@ service:
 
 # Explicitly set single node
 singleNode: true
+
+# Allow the demo configuration to run
+securityConfig:
+  enabled: false

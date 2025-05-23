@@ -1,12 +1,16 @@
 replicaCount: 1
 
+# Connect to OpenSearch (HTTP since we're using demo config)
 opensearchHosts: "http://opensearch-cluster-master:9200"
 
-extraEnvs:
-  - name: "OPENSEARCH_INITIAL_ADMIN_USERNAME"
-    value: "admin"
-  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: "MyPassword123!"
+# Configuration for demo security setup
+config:
+  opensearch_dashboards.yml: |
+    server.host: "0.0.0.0"
+    opensearch.hosts: ["http://opensearch-cluster-master:9200"]
+    opensearch.username: "admin"
+    opensearch.password: "MyPassword123!"
+    opensearch.ssl.verificationMode: none
 
 resources:
   requests:
