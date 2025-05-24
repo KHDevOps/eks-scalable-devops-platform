@@ -1,3 +1,4 @@
+# Simple Fluent Bit values.yaml for OpenSearch - Fixed version
 kind: DaemonSet
 
 image:
@@ -52,6 +53,8 @@ config:
         Logstash_Prefix fluent-bit
         Logstash_DateFormat %Y.%m.%d
         Retry_Limit 3
+        tls On
+        tls.verify Off
 
   customParsers: |
     [PARSER]
