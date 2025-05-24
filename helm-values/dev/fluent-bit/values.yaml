@@ -1,1 +1,86 @@
-#fluent-bit/values.yaml
+kind: DaemonSet
+
+image:
+  repository: fluent/fluent-bit
+  tag: "2.2.0"
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+config:
+  service: |
+    [SERVICE]
+        Daemon Off
+        Flush 5
+        Log_Level info
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port 2020
+
+  inputs: |
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        Parser docker
+        Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+
+  filters: |
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+
+  outputs: |
+    [OUTPUT]
+        Name opensearch
+        Match kube.*
+        Host opensearch-cluster-master.logging.svc.cluster.local
+        Port 9200
+        HTTP_User admin
+        HTTP_Passwd MyPassword123!
+        Index fluent-bit
+        Logstash_Format On
+        Logstash_Prefix fluent-bit
+        Logstash_DateFormat %Y.%m.%d
+        Retry_Limit 3
+
+  parsers: |
+    [PARSER]
+        Name docker
+        Format json
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep On
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+
+tolerations:
+  - operator: Exists
+
+volumeMounts:
+  - name: varlog
+    mountPath: /var/log
+  - name: varlibdockercontainers
+    mountPath: /var/lib/docker/containers
+    readOnly: true
+
+volumes:
+  - name: varlog
+    hostPath:
+      path: /var/log
+  - name: varlibdockercontainers
+    hostPath:
+      path: /var/lib/docker/containers
