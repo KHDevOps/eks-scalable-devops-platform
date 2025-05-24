@@ -1,4 +1,3 @@
-# Simple Fluent Bit values.yaml for OpenSearch - Fixed version
 kind: DaemonSet
 
 image:
@@ -55,6 +54,7 @@ config:
         Retry_Limit 3
         tls On
         tls.verify Off
+        Suppress_Type_Name On
 
   customParsers: |
     [PARSER]
