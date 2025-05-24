@@ -53,7 +53,7 @@ config:
         Logstash_DateFormat %Y.%m.%d
         Retry_Limit 3
 
-  parsers: |
+  customParsers: |
     [PARSER]
         Name docker
         Format json
