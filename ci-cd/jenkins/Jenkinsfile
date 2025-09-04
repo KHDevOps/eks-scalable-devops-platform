@@ -34,34 +34,49 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def config = readYaml file: 'templates/app-config.yaml'
+                    def config = readYaml file: 'templates/app-config.example.yaml'
                     def configRepo = config.git.config_repo
                     def defaultBranch = config.git.default_branch
 
-                    writeFile file: 'hello-world.txt', text: """
-Hello World from Jenkins!
+                    // Créer le contenu du fichier
+                    def fileContent = """
+        Hello World from Jenkins!
 
-Build Information:
-- Build Number: ${BUILD_NUMBER}
-- Job Name: ${JOB_NAME}
-- Date: ${new Date()}
-- Branch: ${defaultBranch}
+        Build Information:
+        - Build Number: ${BUILD_NUMBER}
+        - Job Name: ${JOB_NAME}
+        - Date: ${new Date()}
+        - Branch: ${defaultBranch}
 
-This is a test deployment!
-"""
-
-                    sh('git config user.email "jenkins@yourproject.com"')
-                    sh('git config user.name "Jenkins Automation"')
+        This is a test deployment!
+        """
                     
                     withCredentials([usernamePassword(credentialsId: params.GIT_CREDENTIALS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        sh('git add hello-world.txt')
-                        sh('git commit -m "Jenkins deployment"')
-                        sh("git push https://\${GIT_USERNAME}:\${GIT_PASSWORD}@${configRepo} ${defaultBranch}")
+
+                        sh('rm -rf deploy-temp')
+                        sh('mkdir deploy-temp')
+                        
+                        dir('deploy-temp') {
+
+                            sh('git init')
+                            sh('git config user.email "jenkins@yourproject.com"')
+                            sh('git config user.name "Jenkins Automation"')
+                            
+
+                            writeFile file: 'hello-world.txt', text: fileContent
+                            
+                            sh("git remote add origin https://\${GIT_USERNAME}:\${GIT_PASSWORD}@${configRepo}")
+                            sh('git add hello-world.txt')
+                            sh('git commit -m "Jenkins deployment"')
+                            sh("git push -f origin HEAD:${defaultBranch}")
+                        }
+                        
+                        sh('rm -rf deploy-temp')
                     }
 
                     echo "Hello World successfully deployed!"
                 }
             }
         }
-    }
+    }   
 }
