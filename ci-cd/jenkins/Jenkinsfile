@@ -34,11 +34,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def config = readYaml file: 'templates/app-config.example.yaml'
+                    def config = readYaml file: 'templates/app-config.yaml'
                     def configRepo = config.git.config_repo
                     def defaultBranch = config.git.default_branch
 
-                    // Créer le contenu du fichier
                     def fileContent = """
         Hello World from Jenkins!
 
