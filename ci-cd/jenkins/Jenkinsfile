@@ -25,7 +25,6 @@ pipeline {
                 sh '''
                     curl -LO "https://dl.k8s.io/release/v1.28.0/bin/linux/amd64/kubectl"
                     chmod +x kubectl
-                    mv kubectl /usr/local/bin/kubectl
                 '''
             }
         }
@@ -156,7 +155,7 @@ spec:
 
                     writeFile file: 'argocd-app.yaml', text: argoCDApp
                     withKubeConfig() {
-                        sh 'kubectl apply -f argocd-app.yaml'
+                        sh './kubectl apply -f argocd-app.yaml'
                     }
 
                 }
