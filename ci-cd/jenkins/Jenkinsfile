@@ -9,15 +9,6 @@ pipeline {
             defaultValue: '',
             required: true
         )
-        
-        credentials(
-            name: 'KUBE_CREDENTIALS',
-            description: 'Choose your credentials Kube',
-            credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl',
-            defaultValue: '',
-            required: true
-        )
-
     }
 
     stages {
@@ -29,23 +20,15 @@ pipeline {
                     url: "https://github.com/KHDevOps/eks-scalable-devops-platform"
             }
         }
-
-        stage('Test Kubectl') {
+        stage('Install kubectl') {
             steps {
-                script {
-                    // Tester si kubectl existe
-                    sh 'which kubectl || echo "kubectl not found"'
-                    
-                    // Tester si on peut accéder au cluster
-                    sh 'kubectl version --client || echo "kubectl client failed"'
-                    sh 'kubectl cluster-info || echo "cluster access failed"'
-                    
-                    // Tester les permissions
-                    sh 'kubectl auth can-i create applications.argoproj.io || echo "no ArgoCD permissions"'
-                }
+                sh '''
+                    curl -LO "https://dl.k8s.io/release/v1.28.0/bin/linux/amd64/kubectl"
+                    chmod +x kubectl
+                    mv kubectl /usr/local/bin/kubectl
+                '''
             }
         }
-
         stage('Build') {
             steps {
                 echo 'Building..'
@@ -59,6 +42,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+
                     def config = readYaml file: 'templates/app-config.yaml'
                     def config_repo = config.git.config_repo
                     def defaultBranch = config.git.default_branch
@@ -171,7 +155,7 @@ spec:
 """
 
                     writeFile file: 'argocd-app.yaml', text: argoCDApp
-                    withCredentials([file(credentialsId: params.KUBE_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                    withKubeConfig() {
                         sh 'kubectl apply -f argocd-app.yaml'
                     }
 
