@@ -42,26 +42,50 @@ pipeline {
                     def version = config.app.version
                     def docker_repo = config.docker.username
 
-                    def fileContent = """
-app:
-  name: "${app_name}"
-
-# Docker image
+                    /*def file_content = """
+nameOverride: "${app_name}"
+fullnameOverride: "${app_name}"
+replicaCount: 1
 image:
-  repository: "${docker_repo}/${app_name}"
+  repository: "${docker_username}/${app_name}"
   tag: "${version}"
-
-# Deployment
-replicas: 1
-
-# Container
-container:
-  port: 8080
-
-# Service
+  pullPolicy: IfNotPresent
 service:
+  type: ClusterIP
+  port: 8080
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+podAnnotations: {}
+podLabels: {}
+autoscaling:
+  enabled: false
+ingress:
+  enabled: false
+resources: {}
+        """*/
+                    def file_content = """
+nameOverride: "${app_name}"
+fullnameOverride: "${app_name}"
+replicaCount: 1
+image:
+  repository: "nginxdemos/hello"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
   port: 80
-        """
+serviceAccount:
+  create: true
+  automount: true
+autoscaling:
+  enabled: false
+ingress:
+  enabled: false
+resources: {}
+"""
                     
                     withCredentials([usernamePassword(credentialsId: params.GIT_CREDENTIALS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 
@@ -75,10 +99,10 @@ service:
                             sh('git config user.name "Jenkins Automation"')
                             
 
-                            writeFile file: 'hello-world.txt', text: fileContent
+                            writeFile file: 'values.yaml', text: file_content
                             
                             sh("git remote add origin https://\${GIT_USERNAME}:\${GIT_PASSWORD}@${configRepo}")
-                            sh('git add hello-world.txt')
+                            sh('git add values.yaml')
                             sh('git commit -m "Jenkins deployment"')
                             sh("git push -f origin HEAD:${defaultBranch}")
                         }
@@ -86,7 +110,44 @@ service:
                         sh('rm -rf deploy-temp')
                     }
 
-                    echo "Hello World successfully deployed!"
+                    def argoCDApp = """
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${app_name}
+  namespace: argocd
+  labels:
+    app: ${app_name}
+    managed-by: "eks-devops-platform"
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
+      targetRevision: HEAD
+      path: templates/helm-chart
+      ref: templates
+    - repoURL: https://${config_repo}
+      targetRevision: HEAD
+      path: .
+      helm:
+        valueFiles:
+          - values.yaml
+        sources:
+          - ref: templates
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+"""
+
+                    writeFile file: 'argocd-app.yaml', text: argoCDApp
+                    sh 'kubectl apply -f argocd-app.yaml'
+
                 }
             }
         }
