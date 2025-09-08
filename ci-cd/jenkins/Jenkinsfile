@@ -37,17 +37,30 @@ pipeline {
                     def config = readYaml file: 'templates/app-config.yaml'
                     def configRepo = config.git.config_repo
                     def defaultBranch = config.git.default_branch
+                    
+                    def app_name = config.app.name
+                    def version = config.app.version
+                    def docker_repo = docker.username
 
                     def fileContent = """
-        Hello World from Jenkins!
+app:
+  name: "${app_name}"
 
-        Build Information:
-        - Build Number: ${BUILD_NUMBER}
-        - Job Name: ${JOB_NAME}
-        - Date: ${new Date()}
-        - Branch: ${defaultBranch}
+# Docker image
+image:
+  repository: "${docker_repo}/${app_name}"
+  tag: "${version}"
 
-        This is a test deployment!
+# Deployment
+replicas: 1
+
+# Container
+container:
+  port: 8080
+
+# Service
+service:
+  port: 80
         """
                     
                     withCredentials([usernamePassword(credentialsId: params.GIT_CREDENTIALS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
