@@ -1,10 +1,6 @@
 pipeline {
-    agent {
-        docker {
-            image 'bitnami/kubectl:latest'
-            args '--entrypoint='
-        }
-    }
+    agent { label 'built-in' }
+
     parameters {
         credentials(
             name: 'GIT_CREDENTIALS',
@@ -13,6 +9,15 @@ pipeline {
             defaultValue: '',
             required: true
         )
+        
+        credentials(
+            name: 'KUBE_CREDENTIALS',
+            description: 'Choose your credentials Kube',
+            credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl',
+            defaultValue: '',
+            required: true
+        )
+
     }
 
     stages {
@@ -166,7 +171,9 @@ spec:
 """
 
                     writeFile file: 'argocd-app.yaml', text: argoCDApp
-                    sh 'kubectl apply -f argocd-app.yaml'
+                    withCredentials([file(credentialsId: params.KUBE_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                        sh 'kubectl apply -f argocd-app.yaml'
+                    }
 
                 }
             }
