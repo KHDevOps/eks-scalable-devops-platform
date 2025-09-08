@@ -1,6 +1,10 @@
 pipeline {
-    agent { label 'built-in' }
-
+    agent {
+        docker {
+            image 'bitnami/kubectl:latest'
+            args '--entrypoint='
+        }
+    }
     parameters {
         credentials(
             name: 'GIT_CREDENTIALS',
