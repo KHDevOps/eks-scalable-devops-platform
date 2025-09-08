@@ -40,7 +40,7 @@ pipeline {
                     
                     def app_name = config.app.name
                     def version = config.app.version
-                    def docker_repo = docker.username
+                    def docker_repo = config.docker.username
 
                     def fileContent = """
 app:
