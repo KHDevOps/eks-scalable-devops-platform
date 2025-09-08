@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     def config = readYaml file: 'templates/app-config.yaml'
-                    def configRepo = config.git.config_repo
+                    def config_repo = config.git.config_repo
                     def defaultBranch = config.git.default_branch
                     
                     def app_name = config.app.name
@@ -101,7 +101,7 @@ resources: {}
 
                             writeFile file: 'values.yaml', text: file_content
                             
-                            sh("git remote add origin https://\${GIT_USERNAME}:\${GIT_PASSWORD}@${configRepo}")
+                            sh("git remote add origin https://\${GIT_USERNAME}:\${GIT_PASSWORD}@${config_repo}")
                             sh('git add values.yaml')
                             sh('git commit -m "Jenkins deployment"')
                             sh("git push -f origin HEAD:${defaultBranch}")
