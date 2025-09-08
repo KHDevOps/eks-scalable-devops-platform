@@ -12,12 +12,28 @@ pipeline {
     }
 
     stages {
-
+        
         stage('Checkout Config Repo') {
             steps {
                 git branch: 'main',
                     credentialsId: params.GIT_CREDENTIALS,
                     url: "https://github.com/KHDevOps/eks-scalable-devops-platform"
+            }
+        }
+
+        stage('Test Kubectl') {
+            steps {
+                script {
+                    // Tester si kubectl existe
+                    sh 'which kubectl || echo "kubectl not found"'
+                    
+                    // Tester si on peut accéder au cluster
+                    sh 'kubectl version --client || echo "kubectl client failed"'
+                    sh 'kubectl cluster-info || echo "cluster access failed"'
+                    
+                    // Tester les permissions
+                    sh 'kubectl auth can-i create applications.argoproj.io || echo "no ArgoCD permissions"'
+                }
             }
         }
 
