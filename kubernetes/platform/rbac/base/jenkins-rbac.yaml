@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: argocd
+  name: jenkins-argocd
+rules:
+- apiGroups: ["argoproj.io"]
+  resources: ["applications"]
+  verbs: ["get", "create", "update", "patch", "apply"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-argocd-binding
+  namespace: argocd
+subjects:
+- kind: ServiceAccount
+  name: jenkins
+  namespace: devops-tools
+roleRef:
+  kind: Role
+  name: jenkins-argocd
+  apiGroup: rbac.authorization.k8s.io
