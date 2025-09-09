@@ -118,7 +118,7 @@ resources: {}
                         sh('rm -rf deploy-temp')
                     }
 
-                    def argoCDApp = """
+                        def argoCDApp = """
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -137,11 +137,10 @@ spec:
     - repoURL: https://${config_repo}
       targetRevision: HEAD
       path: .
+      ref: values
       helm:
         valueFiles:
-          - values.yaml
-        sources:
-          - ref: templates
+          - \$values/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: default
