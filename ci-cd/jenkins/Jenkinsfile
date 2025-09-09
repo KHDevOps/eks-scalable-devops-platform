@@ -130,14 +130,13 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
-      targetRevision: HEAD
-      path: templates/helm-chart
-      ref: templates
     - repoURL: https://${config_repo}
       targetRevision: HEAD
       path: .
       ref: values
+    - repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
+      targetRevision: HEAD
+      path: templates/helm-chart
       helm:
         valueFiles:
           - \$values/values.yaml
