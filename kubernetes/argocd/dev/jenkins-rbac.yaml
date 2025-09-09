@@ -11,7 +11,7 @@ spec:
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: devops-tools
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
