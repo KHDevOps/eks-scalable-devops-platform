@@ -441,7 +441,7 @@ advanced:
 # -----------------------------------------------------------------------------
 git:
   # Source repository (your application code)
-  source_repo: ""
+  source_repo: "github.com/KHDevOps/testsource"
   
   # Config repository (GitOps configuration)
   config_repo: "github.com/KHDevOps/testpipeline"
