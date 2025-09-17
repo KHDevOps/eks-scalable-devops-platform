@@ -1,58 +1,18 @@
 # EKS Scalable DevOps Platform
 
-This project provides a scalable DevOps platform deployed on Amazon EKS. The platform includes Kubernetes cluster provisioning with Terraform, CI/CD pipeline setup with Jenkins, and monitoring with Prometheus and Grafana.
+A complete DevOps platform on AWS EKS with GitOps, monitoring, and CI/CD.
 
 **Note: This project is still under active development. The README and documentation may not reflect the most current state of the project.**
 
-## Project Overview
 
-```
-.
-├── ansible
-│   ├── playbooks
-│   └── roles
-├── assets
-├── ci-cd
-├── demo-app
-│   └── src
-├── kind
-├── kubernetes
-│   ├── argocd
-│   │   └── dev
-│   ├── helm-values
-│   │   └── dev
-│   ├── infrastucture
-│   │   └── cert-manager
-│   └── platform
-│       ├── monitoring
-│       └── networking
-└── terraform
-    ├── environnements
-    │   ├── dev
-    │   ├── prod
-    │   └── staging
-    └── modules
-        ├── acm
-        ├── argocd
-        ├── dns-zone
-        ├── eks
-        ├── eks-addons
-        ├── iam
-        ├── loadbalancer
-        ├── network
-        ├── route53
-        ├── secrets
-        └── security
-```
+## Features
 
-This project provides a comptlete DevOps platform with:
-
-1. **Secure Kubernetes Infrastructure** on Amazon EKS with private nodes and controlled access
-2. **GitOps-based Deployment** using ArgoCD for declarative application management
-3. **Monitoring** with Prometheus and Grafana
-4. **CI/CD Pipeline** with Jenkins for automated builds and tests
-5. **Ingress Management** with NGINX for secure external access
-6. **Autoscaling** for both infrastructure and applications
+1. EKS Cluster with private nodes and autoscaling
+2. GitOps with ArgoCD for automated deployments
+3. Monitoring with Prometheus and Grafana
+4. CI/CD with Jenkins
+5. Ingress with NGINX and SSL termination
+6. Security with private API and controlled access
 
 ## Architecture Overview
 
@@ -93,40 +53,14 @@ The platform consists of the following components:
 - **Target Group Isolation**: Application traffic routed only to ingress controller ports
 - **NodePort-based Ingress**: Controlled exposure of services
 
-## Helm Chart Management
-
-### Vendored Helm Charts
-
-This project uses a "chart vendoring" approach where third-party Helm charts are copied into the repository to ensure:
-
-1. **Version Control**: Exact versions of charts are maintained and tracked alongside the infrastructure code
-2. **Customization**: Charts can be modified to suit specific project needs
-3. **Stability**: Prevents unexpected changes from upstream chart repositories
-4. **Offline Deployment**: Enables deployment in environments without direct Internet access
-
-The vendored charts are located in the `helm-charts/` directory with corresponding values in `helm-values/<environment>/`.
-
-### Third-Party Chart Attributions
-
-The following third-party Helm charts are included in this repository:
-
-- **ArgoCD**: [argoproj/argo-helm](https://github.com/argoproj/argo-helm) - Apache 2.0 License
-- **Prometheus**: [prometheus-community/helm-charts](https://github.com/prometheus-community/helm-charts) - Apache 2.0 License
-- **NGINX Ingress Controller**: [kubernetes/ingress-nginx](https://github.com/kubernetes/ingress-nginx) - Apache 2.0 License
-- **Jenkins**: [jenkinsci/helm-charts](https://github.com/jenkinsci/helm-charts) - Apache 2.0 License
-- **Metrics Server**: [kubernetes-sigs/metrics-server](https://github.com/kubernetes-sigs/metrics-server) - Apache 2.0 License
-- **Cluster Autoscaler**: [kubernetes/autoscaler](https://github.com/kubernetes/autoscaler) - Apache 2.0 License
-
-Each chart retains its original license within its directory. All modifications to the charts are documented in the respective chart's README file.
-
 ## Prerequisites
 
-- **Amazon Web Services** account with billing enabled
-- **AWS CLI** installed and configured
-- **Terraform** installed on your machine
-- **Kubernetes** CLI (kubectl) installed
-- **Helm** installed for managing Kubernetes applications
-- **Ansible** installed for configuration management
+- **Amazon Web Services**
+- **AWS CLI**
+- **Terraform**
+- **Kubernetes**
+- **Helm**
+- **Ansible**
 
 ## Setup Instructions
 
@@ -173,8 +107,6 @@ terraform init
 terraform apply
 ```
 
-The infrastructure deployment will take approximately 10-15 minutes.
-
 ### Step 5: Configure ArgoCD Applications using Ansible
 
 Once the infrastructure is ready, deploy ArgoCD applications:
@@ -201,28 +133,10 @@ Link them to the load balancer using this DNS name:
 
 It will install all we need in the cluster.
 
-### Step 7: Access the Services
-
-Once DNS propagation is complete, you can access:
-
-- ArgoCD: https://argocd.yourdomain.com
-- Jenkins: https://jenkins.yourdomain.com
-- Prometheus: https://prometheus.yourdomain.com
-- Grafana: https://grafana.yourdomain.com
-- AlertManager: https://alertmanager.yourdomain.com
-
-For ArgoCD, get the initial admin password:
-
-```bash
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-```
-
-### Step 8: Deploy Your Image
+### Step 7: Deploy Your Image
 #TODO
 
 ## CleanUp
-
-To remove all deployed resources, run:
 
 ```bash
 cd terraform/environnements/dev
@@ -230,84 +144,6 @@ terraform destroy
 ```
 
 **Note**: This will completely remove all resources, including EKS cluster, worker nodes, and load balancers.
-
-## Project Roadmap:
-
-### Core Infrastructure ⚙️
-- [x] VPC with public/private subnets
-- [x] EKS cluster with private nodes
-- [x] IAM roles and security groups
-- [x] Load balancer and target groups
-- [x] Terraform modular architecture
-- [ ] Terraform state management in S3
-
-### Platform Components 🧩
-- [x] ArgoCD for GitOps deployment
-- [x] NGINX Ingress Controller
-- [x] Metrics Server
-- [x] Cluster Autoscaler
-- [x] Horizontal Pod Autoscaler (HPA)
-- [ ] Vertical Pod Autoscaler (VPA)
-- [x] Service discovery
-- [ ] External DNS integration
-- [x] Automated target group registration
-
-### Application Development & Deployment 🚀
-- [ ] Sample microservices application
-- [ ] Containerized application template
-- [ ] Dockerfile best practices
-- [ ] Multi-stage Docker builds
-- [ ] Container image optimization
-- [ ] Private ECR repository setup
-- [ ] Kubernetes deployment manifests
-- [ ] Helm charts for applications
-- [ ] ArgoCD application deployment
-- [ ] Resource requests and limits
-- [ ] Liveness and readiness probes
-
-### Service Mesh & Networking 🕸️
-- [ ] Istio service mesh implementation
-- [ ] Traffic management with Istio
-- [ ] mTLS for service-to-service communication
-- [ ] Network policies for pod-to-pod traffic control
-- [ ] Egress gateway for controlled external access
-
-### CI/CD Pipeline 🔄
-- [x] Jenkins deployment
-- [x] Terraform validation pipeline
-- [ ] Complete CI/CD workflow pipeline
-- [ ] Automated testing
-- [ ] Multi-environment deployment pipeline
-- [ ] Integration tests
-
-### Monitoring & Observability 📊
-- [x] Prometheus for metrics
-- [x] Grafana for visualization
-- [x] AlertManager for alerts
-- [x] Jenkins monitoring dashboard
-- [ ] Custom Grafana dashboards for each major component/pod
-- [ ] Distributed tracing implementation
-- [ ] Custom alert definitions
-- [ ] Health check endpoints and probes
-
-### Security Features 🔒
-- [x] Private Kubernetes API access
-- [x] Security groups for network isolation
-- [x] IAM role-based access
-- [ ] Secret management with AWS Secrets Manager
-- [ ] Cert-manager configuration
-- [ ] Implementation of Pod Security Policies/Standards
-- [ ] Image vulnerability scanning
-- [ ] Runtime security monitoring
-
-### Documentation & Maintenance 📝
-- [x] Basic README with setup instructions
-- [x] Architecture documentation
-- [x] Deployment process documentation
-- [ ] Component-specific documentation
-- [ ] Troubleshooting guide
-- [ ] Contribution guidelines
-- [ ] Performance tuning recommendations
 
 ## License
 
