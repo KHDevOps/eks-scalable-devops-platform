@@ -43,17 +43,14 @@ pipeline {
                         credentialsId: params.GIT_CREDENTIALS,
                         url: "https://${source_repo}"
 
-                        container('docker') {
-                            script {
-                                image = docker.build("${docker_username}/${app_name}")
-                                image.tag("${docker_username}/${app_name}:latest")
-                                docker.withRegistry('', params.DOCKER_CREDENTIALS) {            
-                                    image.push("${env.BUILD_NUMBER}")            
-                                    image.push("latest")  
-                                }
+                        script {
+                            def image = docker.build("${docker_username}/${app_name}")
+                            image.tag("${docker_username}/${app_name}:latest")
+                            docker.withRegistry('', params.DOCKER_CREDENTIALS) {            
+                                image.push("${env.BUILD_NUMBER}")            
+                                image.push("latest")  
                             }
                         }
-
                     }
                 }
             }
