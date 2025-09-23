@@ -1,4 +1,9 @@
 controller:
+  serviceAccount:
+    create: true
+    name: jenkins
+rbac:
+  create: false
   admin:
     password: "password123"
   installPlugins:
