@@ -8,6 +8,18 @@ controller:
     - configuration-as-code:1985.vdda_32d0c4ea_b_
     - prometheus:2.0.11
   additionalPlugins: []
+  
+  additionalVolumes:
+    - type: HostPath
+      hostPath: /var/run/docker.sock
+      mountPath: /var/run/docker.sock
+      
+  initScripts:
+    docker-client: |
+      #!/bin/bash
+      curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz | tar xzv --strip 1 -C /usr/local/bin docker/docker
+      chmod +x /usr/local/bin/docker
+  
   resources:
     requests:
       cpu: 300m
