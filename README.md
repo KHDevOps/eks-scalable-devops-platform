@@ -1,89 +1,60 @@
+![Diagram](/assets/eks_scalable_devops_platform_diagram.svg "Diagram")
+
 # EKS Scalable DevOps Platform
 
 A complete DevOps platform on AWS EKS with GitOps, monitoring, and CI/CD.
 
-**Note: This project is still under active development. The README and documentation may not reflect the most current state of the project.**
+## Table of Contents
 
+- [About](#about)
+- [Installation](#installation)
+- [Cleanup](#cleanup)
+- [License](#license)
+- [Author](#author)
 
-## Features
+## About
 
-1. EKS Cluster with private nodes and autoscaling
-2. GitOps with ArgoCD for automated deployments
-3. Monitoring with Prometheus and Grafana
-4. CI/CD with Jenkins
-5. Ingress with NGINX and SSL termination
-6. Security with private API and controlled access
+**EKS Scalable DevOps Platform** is a comprehensive, production-ready infrastructure solution designed to simplify the deployment and management of Kubernetes-based applications on AWS EKS. It follows high standards of security, scalability, and maintainability, utilizing proven DevOps practices including GitOps architecture, Infrastructure as Code, and cloud-native patterns. These approaches ensure the following benefits:
 
-## Architecture Overview
+- **Security**: Enterprise-grade security practices with proper RBAC, network policies, secret management and VPC.
+- **Scalability**: Auto-scaling capabilities for both infrastructure and applications, ensuring optimal resource utilization.
+- **Maintainability**: Clear structure and separation facilitate better management of the codebase.
+- **Observability**: Complete monitoring and alerting stack pre-integrated, utilizing Prometheus and Grafana.
+- **Automation**: Complete CI/CD pipeline with Jenkins for continuous integration and ArgoCD for GitOps-based continuous deployment, enabling fully automated software delivery.
 
-A high-level overview of the architecture:
+## Installation
 
-![EKS Scalable DevOps Platform Diagram](assets/eks_scalable_devops_platform_diagram.svg) 
+### Prerequisities
 
-The platform consists of the following components:
+- [**Amazon Web Services subscription**](https://aws.amazon.com/pricing/)
+- [**AWS CLI**](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [**Terraform**](https://developer.hashicorp.com/terraform/install)
+- [**Kubectl**](https://kubernetes.io/releases/download/)
+- [**Helm**](https://helm.sh/docs/intro/install/)
+- [**Ansible**](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-### Infrastructure Layer
+### Fork the repository
 
-- **Amazon EKS**: Managed Kubernetes cluster with private worker nodes
-- **VPC with Public/Private Subnets**: Network isolation for security
-- **Application Load Balancer**: External traffic routing to services
-- **NAT Gateways**: Secure outbound connectivity for worker nodes
-- **IAM Roles & Policies**: Least privilege security model
+Fork this repository on GitHub by clicking the "Fork" button
 
-### Platform Layer
-
-- **ArgoCD**: GitOps deployment model with automatic synchronization
-- **NGINX Ingress Controller**: Manages external access to services
-- **Cluster Autoscaler**: Automatically scales the underlying infrastructure
-- **Metrics Server**: Resource metrics for HPA and monitoring
-
-### CI/CD & Monitoring Layer
-
-- **Jenkins**: Automated build, test and deployment pipelines
-- **Prometheus**: Metrics collection and alerting
-- **Grafana**: Visualization and dashboards
-- **AlertManager**: Alert notification and management
-
-### Security Features
-
-- **Private Kubernetes API**: Access limited to authorized IPs only
-- **Private Worker Nodes**: No direct external access to nodes
-- **Security Groups**: Fine-grained network access control
-- **IAM Integration**: RBAC mapped to AWS IAM roles
-- **Target Group Isolation**: Application traffic routed only to ingress controller ports
-- **NodePort-based Ingress**: Controlled exposure of services
-
-## Prerequisites
-
-- **Amazon Web Services**
-- **AWS CLI**
-- **Terraform**
-- **Kubernetes**
-- **Helm**
-- **Ansible**
-
-## Setup Instructions
-
-### Step 1: Clone the repository
+Clone your forked repository:
 
 ```bash
-git clone git@github.com:Leomendoza13/eks-scalable-devops-platform.git
+git clone git@github.com:<username>/eks-scalable-devops-platform.git
 cd eks-scalable-devops-platform
 ```
 
-### Step 2: Configure AWS CLI
+### Configure AWS CLI
 
-1. Install AWS CLI if it's not already installed.
-2. Authenticate with AWS:
+Authenticate with AWS:
 
 ```bash
 aws configure
-# Provide your AWS Access Key, Secret Key, and preferred region
 ```
 
 Enter your AWS credentials when prompted.
 
-### Step 3: Request an SSL Certificate in AWS Certificate Manager
+### Request an SSL Certificate in AWS Certificate Manager
 
 Before deploying the infrastructure, you need to request an SSL certificate for your domain:
 
@@ -99,7 +70,7 @@ Before deploying the infrastructure, you need to request an SSL certificate for 
 
 Make note of the certificate ARN as you'll need it for the next step.
 
-### Step 4: Deploy Infrastructure with Terraform
+### Deploy Infrastructure with Terraform
 
 ```bash
 cd terraform/environnements/dev
@@ -107,34 +78,66 @@ terraform init
 terraform apply
 ```
 
-### Step 5: Configure ArgoCD Applications using Ansible
-
-Once the infrastructure is ready, deploy ArgoCD applications:
+### Deploy Your Image
 
 ```bash
-helm install argocd argo/argo-cd --namespace argocd --create-namespace
+terraform output ecr_repository_url
 ```
 
-This will:
-- Deploy the ArgoCD application manifests
-- Configure target groups for the load balancer
-- Connect the worker nodes to the target groups
+Edit `kubernetes/app/overlays/dev/kustomization.yaml` and update the image URL:
 
-### Step 6: Configure DNS Records
-
-Use the load balancer DNS name provided in the Ansible output to configure your DNS records:
-
-```
-Go to your domain service and create the following subdomains:
-prometheus, jenkins, argocd, alertmanager, grafana
-Link them to the load balancer using this DNS name:
-<load-balancer-dns-name>
+```yaml
+images:
+- name: hello-app
+  newName: <your_ecr_url>
+  newTag: latest
 ```
 
-It will install all we need in the cluster.
+Build and push your image:
 
-### Step 7: Deploy Your Image
-#TODO
+```bash
+export AWS_REGION=$(terraform output -raw aws_region)
+export ECR_URL=$(terraform output -raw ecr_repository_url)
+
+aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URL
+
+docker build -t hello-app ./app/
+docker tag hello-app:latest $ECR_URL:latest
+docker push $ECR_URL:latest
+```
+
+To use your own code instead of the example app, modify:
+
+`app/` - Your application source code
+`kubernetes/app/` - Kubernetes manifests for your app
+
+
+### Configure ArgoCD Applications using Ansible
+
+Once the infrastructure is ready and the image pushed to the registry, deploy ArgoCD applications:
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm install argo-cd argo/argo-cd -n argocd --create-namespace
+
+kubectl apply -f kubernetes/argocd/dev
+```
+
+### Configure DNS Records
+
+Get the load balancer DNS name:
+
+```bash
+terraform output load_balancer_dns_name
+```
+Then, create the following CNAME records in your domain provider:
+
+- prometheus.<yourdomain>.com → $LB_DNS
+- jenkins.<yourdomain>.com → $LB_DNS
+- argocd.<yourdomain>.com → $LB_DNS
+- alertmanager.<yourdomain>.com → $LB_DNS
+- grafana.<yourdomain>.com → $LB_DNS
 
 ## CleanUp
 
@@ -143,7 +146,7 @@ cd terraform/environnements/dev
 terraform destroy
 ```
 
-**Note**: This will completely remove all resources, including EKS cluster, worker nodes, and load balancers.
+**Note**: This will completely remove all resources.
 
 ## License
 
