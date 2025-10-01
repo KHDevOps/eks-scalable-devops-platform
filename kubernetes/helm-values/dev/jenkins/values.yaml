@@ -6,29 +6,8 @@ controller:
     name: jenkins
   admin:
     password: "password123"
-  installPlugins:
-    - kubernetes:4400.v6b_b_1383d3a_c5
-    - workflow-aggregator:608.v67378e9d3db_1
-    - git:5.7.0
-    - configuration-as-code:1985.vdda_32d0c4ea_b_
-    - prometheus:2.0.11
-    
-    - docker-commons:439.va_3cb_0a_6a_fb_29
-    - docker-workflow:597.v0f4a_25fc3dc9
-    
-    - argo-cd:439.v02be66c99aa4
-    
-    - credentials:1393.v3fb_454ffb_a_14
-    - credentials-binding:713.v2a_0e5d5e51a_7
-    
-    - github:1.40.0
-    - github-branch-source:1797.v86fdb_4d57d43
-    
-    - pipeline-utility-steps:2.19.0
-    - timestamper:1.29
-    - ws-cleanup:0.47
-
-  additionalPlugins: []
+  #installPlugins:
+  #SadditionalPlugins: []
 
   podSecurityContext:
     runAsNonRoot: true
