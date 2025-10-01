@@ -1,6 +1,18 @@
 controller:
   admissionWebhooks:
     enabled: false
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    runAsUser: 101
+    capabilities:
+      drop:
+        - ALL
+      add:
+        - NET_BIND_SERVICE
+
+  podSecurityContext:
+    fsGroup: 101
+
   resources:
     requests:
       cpu: 100m
