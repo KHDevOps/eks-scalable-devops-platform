@@ -1,15 +1,36 @@
+global:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    fsGroup: 999
+
 server:
-#  config:
-#    url: http://eksargocd.duckdns.org
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
   
   ingress:
     enabled: false
 
 repoServer:
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  
   metrics:
     enabled: true
 
 redis:
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  
   metrics:
     enabled: true
 

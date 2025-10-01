@@ -12,6 +12,18 @@ rbac:
     annotations:
       eks.amazonaws.com/role-arn: "arn:aws:iam::${ACCOUNT_ID}:role/eks-cluster-dev-autoscaler-role"
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
 resources:
   limits:
     cpu: 100m
@@ -50,11 +62,8 @@ tolerations:
 
 podSecurityContext:
   fsGroup: 65534
-
-securityContext:
   runAsNonRoot: true
   runAsUser: 65534
-  runAsGroup: 65534
 
 serviceMonitor:
   enabled: true

@@ -4,6 +4,14 @@ prometheusOperator:
   tls:
     enabled: false
 
+prometheus:
+  prometheusSpec:
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      fsGroup: 65534
+      runAsGroup: 65534
+
 server:
   resources:
     requests:
@@ -20,6 +28,13 @@ server:
     targetMemoryUtilizationPercentage: 80
 
 alertmanager:
+  alertmanagerSpec:
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      fsGroup: 65534
+      runAsGroup: 65534
+
   resources:
     requests:
       cpu: 100m
@@ -29,6 +44,17 @@ alertmanager:
       memory: 256Mi
 
 grafana:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 472
+    fsGroup: 472
+  
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+        
   resources:
     requests:
       cpu: 100m

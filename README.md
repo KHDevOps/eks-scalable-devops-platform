@@ -1,8 +1,6 @@
-![Diagram](/assets/eks_scalable_devops_platform_diagram.svg "Diagram")
-
 # EKS Scalable DevOps Platform
 
-A complete DevOps platform on AWS EKS with GitOps, monitoring, and CI/CD.
+![Diagram](/assets/eks_scalable_devops_platform_diagram.svg "Diagram")
 
 ## Table of Contents
 
