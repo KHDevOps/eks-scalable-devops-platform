@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: jenkins-network-policy
+  namespace: devops-tools
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+
+  - from:
+    - podSelector: {}
+
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+
+  egress:
+  - to:
+    - podSelector: {}
+
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+  - to:
+    - namespaceSelector: {}
