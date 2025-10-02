@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/KHDevOps/eks-scalable-devops-platform
-    path: kubernetes/platform/network/network-policies/overlays/dev/
+    path: kubernetes/platform/networking/network-policies/overlays/dev/
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
