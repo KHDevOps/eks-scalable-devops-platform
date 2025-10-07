@@ -1,28 +1,24 @@
-# EKS Scalable DevOps Platform
+# EKS DevOps Platform Template
+
+A template to manage EKS using DevOps best practices.
 
 ![Diagram](/assets/eks_scalable_devops_platform_diagram.svg "Diagram")
 
-## Table of Contents
+## What's Inside
 
-- [About](#about)
-- [Installation](#installation)
-- [Cleanup](#cleanup)
-- [License](#license)
-- [Author](#author)
+Fork the repository and start your AWS platform with:
 
-## About
+- **Security**: Best practices with proper RBAC, network policies, secret management and VPC.
+- **Scalability**: Auto-scaling for both infrastructure and applications.
+- **Maintainability**: Clear structure and separation for better codebase management.
+- **Observability**: Monitoring and alerting using Prometheus and Grafana.
+- **Automation**: CI/CD with Jenkins and ArgoCD for GitOps-based deployment.
 
-**EKS Scalable DevOps Platform** is a comprehensive, production-ready infrastructure solution designed to simplify the deployment and management of Kubernetes-based applications on AWS EKS. It follows high standards of security, scalability, and maintainability, utilizing proven DevOps practices including GitOps architecture, Infrastructure as Code, and cloud-native patterns. These approaches ensure the following benefits:
-
-- **Security**: Enterprise-grade security practices with proper RBAC, network policies, secret management and VPC.
-- **Scalability**: Auto-scaling capabilities for both infrastructure and applications, ensuring optimal resource utilization.
-- **Maintainability**: Clear structure and separation facilitate better management of the codebase.
-- **Observability**: Complete monitoring and alerting stack pre-integrated, utilizing Prometheus and Grafana.
-- **Automation**: Complete CI/CD pipeline with Jenkins for continuous integration and ArgoCD for GitOps-based continuous deployment, enabling fully automated software delivery.
-
-## Installation
+## Getting Started
 
 ### Prerequisities
+
+Start by installing the following tools:
 
 - [**Amazon Web Services subscription**](https://aws.amazon.com/pricing/)
 - [**AWS CLI**](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
